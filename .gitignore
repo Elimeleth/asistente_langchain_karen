@@ -1,0 +1,12 @@
+node_modules/
+**/mock
+test.*
+.env
+dist/
+checkpoints/
+states/
+*.log
+flow-*
+*.cjs
+tmp/
+*flow.json
