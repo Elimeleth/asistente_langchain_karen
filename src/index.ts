@@ -5,29 +5,45 @@ import { MetaProvider } from "@builderbot/provider-meta"
 import { ChatGroq } from "@langchain/groq";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { instructions } from "./prompt";
-import { StringOutputParser } from "@langchain/core/output_parsers";
-import { calculatorTool } from "./tool";
+import { tools } from "./tool";
 
-const template = ChatPromptTemplate.fromMessages([
+import { createToolCallingAgent } from "langchain/agents";
+import { AgentExecutor } from "langchain/agents";
+
+const prompt = ChatPromptTemplate.fromMessages([
     ["system", instructions],
-    ["human", "{input}"]
+    ["placeholder", "{chat_history}"],
+    ["human", "{input}"],
+    ["placeholder", "{agent_scratchpad}"],
 ])
 
-const model = new ChatGroq({
+const llm = new ChatGroq({
     model: "llama-3.1-70b-versatile",
     temperature: .1
-  });
+});
 
-const chain = model.bindTools([calculatorTool])
+const agent = createToolCallingAgent({
+    llm,
+    tools,
+    prompt,
+});
+
+const agentExecutor = new AgentExecutor({
+    agent,
+    tools,
+});
+
+
+// const chain = template.pipe(model.bindTools(tools))
 
 const flow = new Workflow("any")
     .addAction(async (ctx, { send }) => {
+
         console.time("groq")
-        const respuesta = await chain.invoke(ctx.body as string) as any
-        console.log({ respuesta })
+        const { output } = await agentExecutor.invoke({ input: ctx.body });
         console.timeEnd("groq")
 
-        return await send(respuesta.content)
+        return await send(output)
     })
 
 export const database = new Database({

@@ -1,37 +1,36 @@
 import { tool } from "@langchain/core/tools";
-// import { Calculator } from "@langchain/community/"
 import { z } from "zod";
+import { appendRow, getSpreadsheetData } from "./sheet";
 
-/**
- * Note that the descriptions here are crucial, as they will be passed along
- * to the model along with the class name.
- */
-const calculatorSchema = z.object({
-  operation: z
-    .enum(["suma", "resta", "multiplicacion", "divicion"])
-    .describe("el tipo de operacion a ejecutar."),
-  number1: z.number().describe("el primer numero operando."),
-  number2: z.number().describe("el segundo numero operando."),
-});
+export const get_data = tool(
+  async () => {
+    const data = await getSpreadsheetData()
+    console.log({ data })
 
-export const calculatorTool = tool(
-  async ({ operation, number1, number2 }) => {
-    // Functions must return strings
-    if (operation === "suma") {
-      return `${number1 + number2}`;
-    } else if (operation === "resta") {
-      return `${number1 - number2}`;
-    } else if (operation === "multiplicacion") {
-      return `${number1 * number2}`;
-    } else if (operation === "divicion") {
-      return `${number1 / number2}`;
-    } else {
-      throw new Error("Invalid operation.");
-    }
+    return JSON.stringify(data)
   },
   {
-    name: "calculator",
-    description: "Genera operaciones matematicas usando lenguaje natural",
-    schema: calculatorSchema,
+    name: "get_data",
+    description: "Obtiene los nombres y emails de los usuarios"
   }
 );
+
+export const add_data = tool(
+  async ({ nombre, email }) => {
+    console.log({ nombre, email })
+    await appendRow({ nombre, email })
+    return "Datos actualizados"
+  },
+  {
+    name: "add_data",
+    description: "Agrega el nombre y el email del usuario",
+    schema: z.object({
+      nombre: z
+        .string()
+        .describe("el nombre del usuario."),
+      email: z.string().describe("el email del usuario."),
+    })
+  }
+);
+
+export const tools = [get_data, add_data]

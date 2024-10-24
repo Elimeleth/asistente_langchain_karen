@@ -10,3 +10,4 @@ flow-*
 *.cjs
 tmp/
 *flow.json
+creds.json
