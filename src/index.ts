@@ -1,5 +1,5 @@
 import "dotenv/config"
-import { Workflow, GlobalRouter, Database } from "@elimeleth/vaincentflow"
+import { Workflow, GlobalRouter } from "@elimeleth/vaincentflow"
 import { MetaProvider } from "@builderbot/provider-meta"
 
 import { ChatGroq } from "@langchain/groq";
@@ -46,15 +46,6 @@ const flow = new Workflow("any")
         return await send(output)
     })
 
-export const database = new Database({
-    type: "postgres",
-    initialDatabase: "postgres",
-    database: process.env.DATABASE,
-    host: process.env.DATABASE_HOST,
-    port: parseInt(process.env.DATABASE_PORT as any),
-    password: process.env.DATABASE_PWD,
-    username: process.env.DATABASE_USER
-})
 
 let provider = new MetaProvider({
     jwtToken: process.env.JWT_TOKEN,
@@ -65,8 +56,7 @@ let provider = new MetaProvider({
 
 
 new GlobalRouter({
-    provider,
-    database
+    provider
 })
     .addFlows([flow])
     .listen().then(console.log)

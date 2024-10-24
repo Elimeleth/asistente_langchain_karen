@@ -14,8 +14,7 @@
   "dependencies": {
     "@builderbot/bot": "^1.2.2",
     "@builderbot/provider-meta": "^1.2.2",
-    "@elimeleth/baileys": "^1.2.5",
-    "@elimeleth/vaincentflow": "1.8.2-alpha.2",
+    "@elimeleth/vaincentflow": "1.8.1-alpha.12",
     "@langchain/community": "^0.3.7",
     "@langchain/core": "^0.3.13",
     "@langchain/groq": "^0.1.2",
@@ -24,13 +23,11 @@
     "googleapis": "^144.0.0",
     "langchain": "^0.3.3",
     "openai": "^4.66.1",
-    "pg": "^8.13.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.8",
     "@types/node": "^20.16.10",
-    "@types/pg": "^8.11.10",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.1",
